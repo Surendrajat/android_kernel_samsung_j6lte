@@ -1,0 +1,14 @@
+language: cpp
+env:
+  - ARCH=arm64 SUBARCH=arm CROSS_COMPILE=$HOME/work/matthewdalex-aarch64-linux-android-4.9-4d5442c7c524/bin/aarch64-linux-android-
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get -qqy upgrade --no-install-recommends --allow-unauthenticated
+  - sudo apt-get -y install --no-install-recommends lzop gperf zlib1g-dev:i386 python-networkx libxml2-utils bzip2 libbz2-dev libbz2-1.0 squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool optipng
+before_script:
+  - cd $HOME && mkdir work
+  - wget -q https://bitbucket.org/matthewdalex/aarch64-linux-android-4.9/get/master.tar.gz -O $HOME/toolchain.tar.gz
+  - tar -xf toolchain.tar.gz --directory $HOME/work/ && rm toolchain.tar.gz && ls -l work/*
+script:
+  - cd $HOME/work/ && git clone https://github.com/Surendrajat/android_kernel_samsung_j6lte.git kernel-j6lte
+  - cd kernel-j6lte && make clean && make j6lte_00_defconfig && make -j16
